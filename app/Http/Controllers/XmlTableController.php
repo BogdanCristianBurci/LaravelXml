@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Storage;
 
 class XmlTableController extends Controller
 {
+    private $regions;
+
     public function index(){
 
         $xmlFile= Storage::disk('public')->get('xml/xmlFile.xml');
@@ -17,7 +19,9 @@ class XmlTableController extends Controller
     
         $xmlCollection = $this->getViewCollection($xmlArr['country']);
 
-        return view('xmlProject.table',compact('xmlCollection'));
+        $allRegions = $this->getRegions();
+
+        return view('xmlProject.table',compact('xmlCollection','allRegions'));
     }
 
     public function getViewCollection($xmlArr){
@@ -25,6 +29,7 @@ class XmlTableController extends Controller
         $xmlArrNew = [];
         foreach($xmlArr as $key=>$country){
             $xmlArrNew[$key]['region'] = $country['@attributes']['zone'] ?? null;
+            $this->addRegion($country['@attributes']['zone']);
             $xmlArrNew[$key]['country']=$country['name'] ?? null;
             $xmlArrNew[$key]['language']=$country['language'] ?? null;
             $xmlArrNew[$key]['currency']=$country['currency'] ?? null;
@@ -41,10 +46,20 @@ class XmlTableController extends Controller
 
         $longLatArr = explode(',',$matches[1]);
 
-        array_pop($longLatArr);
+        if(count($longLatArr)>2){
+            array_pop($longLatArr);
+        }
+        
+        return $longLatArr;   
+    }
 
-        return $longLatArr;
-   
+    public function addRegion($region){
+        if(!in_array($region,$this->getRegions())){
+            $this->regions[]=$region;
+        }
     }
     
+    public function getRegions(){
+        return $this->regions ?? [];
+    }
 }
