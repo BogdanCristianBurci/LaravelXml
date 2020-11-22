@@ -1,0 +1,22 @@
+.table--wrapper {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+}
+.table--row {
+    width: 100%;
+    border: 0.5px solid rgba(0, 0, 0, 0.5);
+    display: flex;
+}
+.table--row:not(:first-child) {
+    border-top: 0;
+}
+.table--cell {
+    border-right: 0.5px solid rgba(0, 0, 0, 0.5);
+    padding: 2px 4px;
+    flex: 1;
+}
+.table--cell:last-child {
+    border-right: 0;
+}
